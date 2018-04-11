@@ -6,40 +6,44 @@ import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract'
 
 // Import our contract artifacts and turn them into usable abstractions.
-import metacoin_artifacts from '../../build/contracts/MetaCoin.json'
+import treasure_artifacts from '../../build/contracts/Treasure.json'
 
 // MetaCoin is our usable abstraction, which we'll use through the code below.
-var MetaCoin = contract(metacoin_artifacts);
+var Treasure = contract(treasure_artifacts);
 
 // The following code is simple to show off interacting with your contracts.
 // As your needs grow you will likely need to change its form and structure.
 // For application bootstrapping, check out window.addEventListener below.
-var accounts;
-var account;
+var hunters;
+var hunter;
 
 window.App = {
   start: function() {
     var self = this;
 
-    // Bootstrap the MetaCoin abstraction for Use.
-    MetaCoin.setProvider(web3.currentProvider);
+    // Bootstrap the Treasure abstraction for Use.
+    Treasure.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
     web3.eth.getAccounts(function(err, accs) {
-      if (err != null) {
-        alert("There was an error fetching your accounts.");
-        return;
-      }
+        if (err != null) {
+            alert("There was an error fetching your accounts.");
+            return;
+        }
 
-      if (accs.length == 0) {
-        alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
-        return;
-      }
+        if (accs.length == 0) {
+            alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
+            return;
+        }
 
-      accounts = accs;
-      account = accounts[0];
+        hunters = accs;
+        hunter = hunters[0];
 
-      self.refreshBalance();
+        var myaddress = document.getElementById("myaddress");
+        myaddress.innerHTML = hunter;
+
+
+        self.refreshBalance();
     });
   },
 
@@ -51,37 +55,38 @@ window.App = {
   refreshBalance: function() {
     var self = this;
 
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.getBalance.call(account, {from: account});
+    var treasure;
+    Treasure.deployed().then(function(instance) {
+        treasure = instance;
+        return treasure.getBalance.call(hunter, {from: hunter});
     }).then(function(value) {
-      var balance_element = document.getElementById("balance");
-      balance_element.innerHTML = value.valueOf();
+        var balance_element = document.getElementById("balance");
+        balance_element.innerHTML = value.valueOf();
     }).catch(function(e) {
-      console.log(e);
-      self.setStatus("Error getting balance; see log.");
+        console.log(e);
+        self.setStatus("Error getting balance; see log.");
     });
   },
 
-  sendCoin: function() {
+  bet: function() {
     var self = this;
 
-    var amount = parseInt(document.getElementById("amount").value);
-    var receiver = document.getElementById("receiver").value;
+    var guess = parseInt(document.getElementById("guess").value);
 
     this.setStatus("Initiating transaction... (please wait)");
 
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.sendCoin(receiver, amount, {from: account});
+    var treasure;
+    Treasure.deployed().then(function(instance) {
+        treasure = instance;
+        var houseAddress = document.getElementById("houseAddress");
+        houseAddress.innerHTML = treasure.getAddress.call();
+        return treasure.bet(guess, {from: hunter});
     }).then(function() {
-      self.setStatus("Transaction complete!");
-      self.refreshBalance();
+        self.setStatus("Transaction complete!");
+        self.refreshBalance();
     }).catch(function(e) {
-      console.log(e);
-      self.setStatus("Error sending coin; see log.");
+        console.log(e);
+        self.setStatus("Error sending coin; see log.");
     });
   }
 };
@@ -95,7 +100,7 @@ window.addEventListener('load', function() {
   } else {
     console.warn("No web3 detected. Falling back to http://127.0.0.1:9545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask");
     // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-    window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:9545"));
+    window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
   }
 
   App.start();
