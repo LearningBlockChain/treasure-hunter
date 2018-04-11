@@ -40,25 +40,30 @@ contract Treasure {
         return addr.balance;
     }
 
+    function getReward() public view returns(uint) {
+        return address(this).balance;
+    }
+
     function getAddress() public view returns(address) {
         return address(this);
     }
 
     function bet(uint guess) payable public {
-        require(hunters[msg.sender].balance > bettingPrice);
+//        require(hunters[msg.sender].balance > bettingPrice);
 
-        hunters[msg.sender].accumulatedAmount += bettingPrice;
+//        hunters[msg.sender].accumulatedAmount += bettingPrice;
         
-        winningNumber = 111;
+//        winningNumber = 111;
 
-        if (guess == winningNumber) {
+//        if (guess == winningNumber) {
             // Send all money of the current contract to the winner
-            msg.sender.transfer(10000 wei);
+//            msg.sender.transfer(this.balance);
             // emit Won(msg.sender, address(this).balance);
-        } else {
+//        } else {
             // If wrong, send betting price to the current contract
-            creator.transfer(bettingPrice);
-        }
+//        creator.transfer(bettingPrice);
+//        address(this).transfer(10 wei);
+//        }
         return;
     } 
 
