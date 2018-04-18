@@ -1,8 +1,6 @@
 let state = {
     web3: {
-        isInjected: false,
         web3Instance: null,
-        networkId: null,
         clientAddress: null,
         clientBalance: null,
         reward: null,
