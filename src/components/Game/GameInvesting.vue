@@ -12,7 +12,7 @@
 import {mapState} from 'vuex'
 
 export default {
-    name: 'TreasureDapp',
+    name: 'GameInvesting',
     beforeCreate () {
         console.log('registerWeb3 Action dispatched.')
         this.$store.dispatch('registerWeb3')
