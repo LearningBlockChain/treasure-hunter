@@ -1,61 +1,209 @@
 pragma solidity ^0.4.17;
 
-contract Treasure {
+import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
+
+contract Treasure is Ownable {
     uint bettingPrice;
+    ufixed bettingRate;
+
+    uint investStartedAt;
+    uint investExpireAt;
+    uint investPeriodInSeconds;
+    uint investPricePerAddress;
+    uint minimumWinningReward;
+
+    uint round;
+    enum Status {INVESTING, BETTING}
+
+    Status currentState;
+    uint gameStartedAt;
+
+
     uint winningNumber;
-    struct Hunter {
-        uint balance;
-        uint accumulatedAmount; // how much an user has spent for a game. 
+    uint winningNumberDigits;
+
+    struct Reward {
+        uint round;
+        uint date;
+        uint amount;
     }
 
-    /* An address of user maps to the balance of the user */
-    mapping(address => Hunter) public hunters;
+    mapping(address => Reward) public winners;
 
-    event Won(address _hunter, uint _amount);
+    mapping(address => uint) public hunters;
+    address[] public hunterAddresses;
+    mapping(address => uint) public investors;
+    address[] public investorAddresses;
 
-    // Contructor
+    event Bet(address _hunter);
+    event Invest(address _investor, uint _reward);
+    event StartGame(uint _reward);
+    event FinishGame(address _hunter, uint _winningNumber, uint _reward);
+
     function Treasure() public {
-        setLevelOfDifficulty(1);
-        winningNumber = block.number % 999 + 1;
+        round = 1;
+        winningNumberDigits = 3;
+        investPeriodInSeconds = 60;
+        bettingRate=0.5;
+        minimumWinningReward=5000000000000000;
+        initGame();
     }
 
-    // When restarting a game, the function must be invoked.
-    function reset(uint randNonce) public {
-        // Random
-        winningNumber = uint(keccak256(now, msg.sender, randNonce)) % 100;
+    function initGame() private {
+        gameStartedAt = 0;
+        investStartedAt = now;
+        currentState = Status.INVESTING;
+
+        investorAddresses;
+
+        delete investorAddresses;
+        delete investors;
+        delete hunterAddresses;
+        delete hunters;
+
+        investExpireAt = investStartedAt + investPeriodInSeconds;
+        winningNumber = uint(keccak256(now, msg.sender, round)) % (10 * winningNumberDigits);
     }
 
-    function setLevelOfDifficulty(uint _level) private returns (uint) {
-        if (_level == 1)
-            bettingPrice = 1000000 wei;
-        else if (_level == 2)
-            bettingPrice = 1000000000 wei;
-        else if (_level == 3)
-            bettingPrice = 1000000000000 wei;
-        return bettingPrice;
+    //  bettingPrice = Reward/10**winningNumberDigits*bettingRate
+    function startGame() private {
+        currentState = Status.BETTING;
+        gameStartedAt = now;
+        investStartedAt = 0;
+        investExpireAt = 0;
+        bettingPrice = getNewBettingPrice();
     }
 
-    function getClientBalance(address addr) public view returns(uint) {
-        return addr.balance;
+    function finishGame() private {
+        initGame();
     }
 
-    function getReward() public view returns(uint) {
+    function getNewBettingPrice() private pure returns(uint){
+        return address(this).balance/((10**winningNumberDigits)*bettingRate);
+    }
+
+    function getWinningNumberDigits() public view returns (uint){
+        return winningNumberDigits;
+    }
+
+    function setWinningNumberDigits(uint _digits) external onlyOwner {
+        require(gameStartedAt != 0);
+
+        winningNumberDigits = _digits;
+    }
+
+    function getInvestPeriod() public view returns (uint){
+        return investPeriodInSeconds;
+    }
+
+    function getInvestExpireAt() public view returns (uint){
+        return investExpireAt;
+    }
+
+    function setInvestPeriod(uint _inSeconds) external onlyOwner {
+        require(gameStartedAt != 0);
+
+        investPeriodInSeconds = _inSeconds;
+    }
+
+    function getInvestPrice() public view returns (uint) {
+        return investPricePerAddress;
+    }
+
+    function setInvestPricePerAddress(uint _price) external onlyOwner {
+        require(gameStartedAt != 0);
+
+        investPricePerAddress = _price;
+    }
+
+    function getHunterAddresses() public view returns (address[]){
+        return hunterAddresses;
+    }
+
+    function getInvestorAddresses() public view returns (address[]){
+        return investorAddresses;
+    }
+
+    function getClientBalance(address _addr) public view returns (uint) {
+        return _addr.balance;
+    }
+
+    function getMinimumWinningReward() public view returns (uint) {
+        return minimumWinningReward;
+    }
+
+    function setMinimumWinningReward(uint _minimum) external onlyOwner {
+        minimumWinningReward = _minimum;
+    }
+
+    function getReward() public view returns (uint) {
         return address(this).balance;
     }
 
-    function getContractAddress() public view returns(address) {
+    function getState() public view returns (Status) {
+        return currentState;
+    }
+
+    function getContractAddress() public view returns (address) {
         return address(this);
     }
 
-    function bet(uint guess) payable public {
-        require(msg.sender.balance > bettingPrice);
+    function invest() payable public {
+        require(currentState == Status.INVESTING);
+        require(msg.value >= investPricePerAddress);
+        require(investors[msg.sender] == 0);
 
-        hunters[msg.sender].accumulatedAmount += bettingPrice;
+        investors[msg.sender] = investPricePerAddress;
+        investorAddresses.push(msg.sender);
 
-        if (guess == winningNumber) {
-            //Send all money of the current contract to the winner
-            msg.sender.transfer(address(this).balance);
-            emit Won(msg.sender, address(this).balance);
+        uint _overSentValue = msg.value - investPricePerAddress;
+        if (_overSentValue > 0) {
+            msg.sender.transfer(_overSentValue);
+        }
+
+        emit Invest(msg.sender, address(this).balance);
+
+        if (investExpireAt < now && address(this).balance > minimumWinningReward){
+
+            startGame();
+            emit StartGame(address(this).balance);
+        }
+
+    }
+
+    function bet(uint _guessingNumber) payable public {
+        require(currentState == Status.BETTING);
+        require(msg.value >= bettingPrice);
+
+        hunters[msg.sender] += bettingPrice;
+        hunterAddresses.push(msg.sender);
+
+        uint _overSentValue = msg.value - bettingPrice;
+        if (_overSentValue > 0) {
+            msg.sender.transfer(_overSentValue);
+        }
+
+        bool _won = _guessingNumber == winningNumber;
+        if (_won) {
+            uint _totalReward = address(this).balance;
+            uint _betterReward = _totalReward / 2;
+            uint _investorsReward = _totalReward - _betterReward;
+            uint _investorsCount = investors.length;
+            uint _investorReward = _investorsReward / _investorsCount;
+            msg.sender.transfer(_betterReward);
+
+            winners[msg.sender] = Reward({amount : _totalReward, date : now, round : round});
+
+            emit FinishGame(msg.sender, winningNumber, _betterReward);
+
+            for (uint i = 0; i < _investorsCount; i++) {
+                investorAddresses[i].transfer(_investorReward);
+            }
+            initGame();
+        } else {
+            bettingPrice = getNewBettingPrice();
+
+            emit Bet(msg.sender);
         }
     }
 }

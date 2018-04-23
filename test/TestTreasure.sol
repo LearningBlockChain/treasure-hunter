@@ -11,24 +11,25 @@ contract TestTreasure {
     // and funds this test contract with the specified amount on deployment.
     uint public initialBalance = 10 wei;
 
-    function testDifficulty() public {
-        Treasure treasure = Treasure(DeployedAddresses.Treasure());
-        uint result = treasure.setLevelOfDifficulty(1);
-        uint expected = 1000000;
-        Assert.equal(result, expected, "setLevelOfDifficulty passed!");
+    function testInvest() public {
+        Treasure treasure = Treasure();
+
+//        uint result = treasure.invest();
+//        uint expected = 1000000;
+//        Assert.equal(result, expected, "setLevelOfDifficulty passed!");
     }
 
     function testBetting() public {
-        address treasure = new Treasure();
-        Assert.equal(this.balance, 10 wei, "You have 10 ether");
-        Assert.equal(treasure.balance, 0, "You have 0 balance");
-        
-        // perform an action which sends value to myContract, then assert.
-        treasure.transfer(10 wei);
-        Assert.equal(treasure.balance, 10 wei, "After you won, you have 10 wei");
-
-        Treasure treasure2 = Treasure(DeployedAddresses.Treasure());
-        treasure2.bet();
+//        address treasure = new Treasure();
+//        Assert.equal(this.balance, 10 wei, "You have 10 ether");
+//        Assert.equal(treasure.balance, 0, "You have 0 balance");
+//
+//        // perform an action which sends value to myContract, then assert.
+//        treasure.transfer(10 wei);
+//        Assert.equal(treasure.balance, 10 wei, "After you won, you have 10 wei");
+//
+//        Treasure treasure2 = Treasure(DeployedAddresses.Treasure());
+//        treasure2.bet();
         
 
         //address another = (new Treasure).value(1 ether)(); 
