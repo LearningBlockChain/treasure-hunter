@@ -4,7 +4,7 @@ import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
 contract Treasure is Ownable {
     uint bettingPrice;
-    ufixed bettingRate;
+    uint bettingRate; // 1-10
 
     uint investStartedAt;
     uint investExpireAt;
@@ -31,9 +31,11 @@ contract Treasure is Ownable {
     mapping(address => Reward) public winners;
 
     mapping(address => uint) public hunters;
-    address[] public hunterAddresses;
+    mapping(address => uint) public currentHunters;
+    address[] public currentHunterAddresses;
     mapping(address => uint) public investors;
-    address[] public investorAddresses;
+    mapping(address => uint) public currentInvestors;
+    address[] public currentInvestorAddresses;
 
     event Bet(address _hunter);
     event Invest(address _investor, uint _reward);
@@ -44,7 +46,7 @@ contract Treasure is Ownable {
         round = 1;
         winningNumberDigits = 3;
         investPeriodInSeconds = 60;
-        bettingRate=0.5;
+        bettingRate=5;
         minimumWinningReward=5000000000000000;
         initGame();
     }
@@ -53,13 +55,16 @@ contract Treasure is Ownable {
         gameStartedAt = 0;
         investStartedAt = now;
         currentState = Status.INVESTING;
+        uint i=0;
+        for(i=0; i <currentInvestorAddresses.length;i++){
+            delete currentInvestors[currentInvestorAddresses[i]];
+        }
+        delete currentInvestorAddresses;
 
-        investorAddresses;
-
-        delete investorAddresses;
-        delete investors;
-        delete hunterAddresses;
-        delete hunters;
+        for(i=0; i <currentHunterAddresses.length;i++){
+            delete currentHunters[currentHunterAddresses[i]];
+        }
+        delete currentHunterAddresses;
 
         investExpireAt = investStartedAt + investPeriodInSeconds;
         winningNumber = uint(keccak256(now, msg.sender, round)) % (10 * winningNumberDigits);
@@ -78,8 +83,8 @@ contract Treasure is Ownable {
         initGame();
     }
 
-    function getNewBettingPrice() private pure returns(uint){
-        return address(this).balance/((10**winningNumberDigits)*bettingRate);
+    function getNewBettingPrice() private view returns(uint){
+        return (address(this).balance)/((10**winningNumberDigits)*bettingRate/10);
     }
 
     function getWinningNumberDigits() public view returns (uint){
@@ -117,11 +122,11 @@ contract Treasure is Ownable {
     }
 
     function getHunterAddresses() public view returns (address[]){
-        return hunterAddresses;
+        return currentHunterAddresses;
     }
 
     function getInvestorAddresses() public view returns (address[]){
-        return investorAddresses;
+        return currentInvestorAddresses;
     }
 
     function getClientBalance(address _addr) public view returns (uint) {
@@ -153,8 +158,9 @@ contract Treasure is Ownable {
         require(msg.value >= investPricePerAddress);
         require(investors[msg.sender] == 0);
 
-        investors[msg.sender] = investPricePerAddress;
-        investorAddresses.push(msg.sender);
+
+        investors[msg.sender] += investPricePerAddress;
+        currentInvestorAddresses.push(msg.sender);
 
         uint _overSentValue = msg.value - investPricePerAddress;
         if (_overSentValue > 0) {
@@ -176,7 +182,7 @@ contract Treasure is Ownable {
         require(msg.value >= bettingPrice);
 
         hunters[msg.sender] += bettingPrice;
-        hunterAddresses.push(msg.sender);
+        currentHunterAddresses.push(msg.sender);
 
         uint _overSentValue = msg.value - bettingPrice;
         if (_overSentValue > 0) {
@@ -188,7 +194,7 @@ contract Treasure is Ownable {
             uint _totalReward = address(this).balance;
             uint _betterReward = _totalReward / 2;
             uint _investorsReward = _totalReward - _betterReward;
-            uint _investorsCount = investors.length;
+            uint _investorsCount = currentInvestorAddresses.length ;
             uint _investorReward = _investorsReward / _investorsCount;
             msg.sender.transfer(_betterReward);
 
@@ -197,7 +203,7 @@ contract Treasure is Ownable {
             emit FinishGame(msg.sender, winningNumber, _betterReward);
 
             for (uint i = 0; i < _investorsCount; i++) {
-                investorAddresses[i].transfer(_investorReward);
+                currentInvestorAddresses[i].transfer(_investorReward);
             }
             initGame();
         } else {

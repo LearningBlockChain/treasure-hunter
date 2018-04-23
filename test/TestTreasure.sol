@@ -12,9 +12,9 @@ contract TestTreasure {
     uint public initialBalance = 10 wei;
 
     function testInvest() public {
-        Treasure treasure = Treasure();
+        Treasure treasure = new Treasure();
 
-//        uint result = treasure.invest();
+        treasure.invest();
 //        uint expected = 1000000;
 //        Assert.equal(result, expected, "setLevelOfDifficulty passed!");
     }
