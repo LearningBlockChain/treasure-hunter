@@ -13,10 +13,7 @@ import {mapState} from 'vuex'
 
 export default {
     name: 'GameInvesting',
-    beforeCreate () {
-        console.log('registerWeb3 Action dispatched.')
-        this.$store.dispatch('registerWeb3')
-    },
+    props: ['gameInvestingData'],
     data() {
         return {
         }
