@@ -5,9 +5,9 @@ import treasure_artifacts from '../../build/contracts/Treasure.json'
 let getContract = new Promise(function (resolve, reject) {
     var Treasure = contract(treasure_artifacts);
     Treasure.setProvider(web3.currentProvider);
-    //let address = "0xdb8c2c51566c2dc71d4aa1a334eb991ffb9221bf" // put your contract address when you migrate.
-    //let treausreContractInstance = Treasure.at(address)
-    resolve(Treasure)
+    let address = "0xc19300eccda63bbedcfe4b741bdcd8f8cd371445" // put your contract address when you migrate.
+    let treasureContractInstance = Treasure.at(address)
+    resolve(treasureContractInstance)
 })
 
 export default getContract
