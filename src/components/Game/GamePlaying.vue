@@ -51,7 +51,6 @@
 <script>
 export default {
     name: 'GamePlaying',
-    props: ['gamePlayingData'],
     data() {
         return {
             isSuccess: false,

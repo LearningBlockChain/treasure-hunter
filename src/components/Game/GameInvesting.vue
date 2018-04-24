@@ -4,6 +4,7 @@
     <div class='metamask-info'>
         <p>Hunter: {{ hunter }}
         <p>Balance: {{ balance }} Wei </p>
+        <b-button variant="success" @click="test">Get Invest Period!</b-button>
     </div>
   </div>
 </template>
@@ -13,14 +14,11 @@ import {mapState} from 'vuex'
 
 export default {
     name: 'GameInvesting',
-    props: ['gameInvestingData'],
     data() {
         return {
         }
     },
     mounted() {
-        console.log('dispatching getContractInstance')
-        this.$store.dispatch('getContractInstance')
     },
     computed: mapState({
         hunter: state => state.web3.clientAddress,
@@ -30,6 +28,13 @@ export default {
         // }
     }),
     methods: {
+        test() {
+            console.log(this.$store.state.contractInstance)
+            let instance = this.$store.state.contractInstance
+            instance().getInvestPeriod.call().then(function(result) {
+                console.log(parseInt(result, 10))
+            })
+        }
     }
 }
 </script>
