@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Welcome to Treasure Hunter</h1>
+    <h1>Investing...</h1>
     <div class='metamask-info'>
         <p>Hunter: {{ hunter }}
         <p>Balance: {{ balance }} Wei </p>

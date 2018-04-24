@@ -4,9 +4,9 @@
         <b-navbar-brand href="#">Treasure-Hunter</b-navbar-brand>
         <b-collapse is-nav id="nav_collapse">
             <b-navbar-nav>
-                <b-nav-item href="/game-playing">Game</b-nav-item>
-                <b-nav-item href="/rankings">Rankings</b-nav-item>
-                <b-nav-item href="/rules">Rules</b-nav-item>
+                <b-nav-item href="/game" :active="this.$route.path === '/game-playing'">Game</b-nav-item>
+                <b-nav-item href="/rankings" :active="this.$route.path === '/rankings'">Rankings</b-nav-item>
+                <b-nav-item href="/rules" :active="this.$route.path === '/rules'">Rules</b-nav-item>
             </b-navbar-nav>
         </b-collapse>
     </b-navbar>
@@ -14,7 +14,14 @@
 
 <script>
 export default {
-    name: 'Navigation'
+    name: 'Navigation',
+    data() {
+      return {
+      }
+    },
+    mounted() {
+    }
+
 }
 </script>
 
