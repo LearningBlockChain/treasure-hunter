@@ -47,7 +47,8 @@ contract Treasure is Ownable {
         winningNumberDigits = 3;
         investPeriodInSeconds = 60;
         bettingRate=5;
-        minimumWinningReward=5000000000000000;
+        minimumWinningReward= 0.005 ether;
+        investPricePerAddress = minimumWinningReward / 3;
         initGame();
     }
 
