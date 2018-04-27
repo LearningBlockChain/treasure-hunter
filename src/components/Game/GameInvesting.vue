@@ -4,7 +4,10 @@
     <div class='metamask-info'>
         <p>Hunter: {{ hunter }}
         <p>Balance: {{ balance }} Wei </p>
+        <p>InvestPrice: {{ investPrice }} Wei </p>
         <b-button variant="success" @click="test">Get Invest Period!</b-button>
+        <b-button variant="success" @click="getInvestPrice">Get Invest Price</b-button>
+        <b-button variant="success" @click="invest">Invest</b-button>
     </div>
   </div>
 </template>
@@ -16,6 +19,7 @@ export default {
     name: 'GameInvesting',
     data() {
         return {
+            investPrice: 0,
         }
     },
     mounted() {
@@ -33,6 +37,20 @@ export default {
             let instance = this.$store.state.contractInstance
             instance().getInvestPeriod.call().then(function(result) {
                 console.log(parseInt(result, 10))
+            })
+        },
+        getInvestPrice() {
+            // this.investPrice = 20;
+            let that = this
+            let instance = this.$store.state.contractInstance
+            instance().getInvestPrice.call().then(function(result) {
+                that.investPrice = parseInt(result, 0);
+            })
+        },
+        invest() {
+            let instance = this.$store.state.contractInstance
+            instance().invest.call({gas: 1000, value: this.investPrice}).then(function(result){
+                console.log("result: "+result)
             })
         }
     }
