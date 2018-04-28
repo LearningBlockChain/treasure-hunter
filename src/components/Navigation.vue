@@ -1,5 +1,5 @@
 <template>
-    <b-navbar toggleable="md" type="dark" variant="info" fixed>
+    <b-navbar toggleable="md" class=""navi fixed>
         <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
         <b-navbar-brand href="#">Treasure-Hunter</b-navbar-brand>
         <b-collapse is-nav id="nav_collapse">
@@ -26,5 +26,8 @@ export default {
 </script>
 
 <style scoped>
-
+    .navbar {
+        border-style: groove;
+        margin-bottom: 20px;
+    }
 </style>

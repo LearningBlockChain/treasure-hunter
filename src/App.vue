@@ -11,13 +11,22 @@ export default {
 </script>
 
 <style>
-.container {
+  body {
+      font-family: 'Do Hyeon', sans-serif;
+  }
+  .container {
     padding-right: 15px;
     padding-left: 15px;
     margin-right: auto;
     margin-left: auto;
-}
-body {
-    font-family: 'Do Hyeon', sans-serif;
-}
+  }
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }
+  .put-right {
+    float: right;
+  }
 </style>

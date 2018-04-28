@@ -69,13 +69,4 @@ export default {
 </script>
 
 <style>
-    .put-right {
-        float: right;
-    }
-    .center {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 50%;
-    }
 </style>

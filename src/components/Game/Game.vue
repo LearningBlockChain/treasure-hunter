@@ -11,7 +11,7 @@
     export default {
         name: 'Game',
         components: { GameInvesting, GamePlaying },
-        mounted () {
+        beforeCreate () {
             console.log('registerWeb3 Action dispatched.')
             this.$store.dispatch('registerWeb3')
             console.log('dispatching getContractInstance.')

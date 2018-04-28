@@ -7,6 +7,12 @@ let state = {
         message: null,
         error: null
     },
-    contractInstance: null
+    contractInstance: null,
+    treasure: {
+        investPricePerAddress: null,
+        investExpireAt: null,
+        currentState: null,
+        reward: null
+    }
 }
 export default state
