@@ -8,11 +8,21 @@ let state = {
         error: null
     },
     contractInstance: null,
+    contractAddress: null,
     treasure: {
+        currentState: null,
+        reward: null,
+        minimalReward: null,
+        bettingPrice: null,
         investPricePerAddress: null,
         investExpireAt: null,
-        currentState: null,
-        reward: null
+        investPeriod: null,
+        winningNumberDigits: null,
+    },
+    user: {
+        hunters: null,
+        investors: null,
+        balance: null
     }
 }
 export default state

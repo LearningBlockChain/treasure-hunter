@@ -130,6 +130,7 @@ contract Treasure is Ownable {
         return currentInvestorAddresses;
     }
 
+    /* TODO: 이 함수는 필요 없을 것 같습니다. web3에서 직접 접근해서 값을 가져 올 수 있습니다. */
     function getClientBalance(address _addr) public view returns (uint) {
         return _addr.balance;
     }
@@ -175,7 +176,6 @@ contract Treasure is Ownable {
             startGame();
             emit StartGame(address(this).balance);
         }
-
     }
 
     function bet(uint _guessingNumber) payable public {

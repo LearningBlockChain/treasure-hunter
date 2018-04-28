@@ -89,10 +89,7 @@ export default {
     methods: {
         invest() {
             this.$store.dispatch('invest').then((res) => {
-                // TODO:
-                // 1. Toast로 성공했다는 메시지 추가
-                // 2. 3초 후에 페이지 refresh
-                console.log(res)
+                // Nothing to do
             })
             let Invest = this.$store.state.contractInstance().Invest()
             Invest.watch((err, result) => {
