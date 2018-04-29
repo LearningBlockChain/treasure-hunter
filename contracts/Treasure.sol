@@ -49,6 +49,7 @@ contract Treasure is Ownable {
         bettingRate=5;
         minimumWinningReward= 0.005 ether;
         investPricePerAddress = minimumWinningReward / 3;
+        bettingPrice = 0;
         initGame();
     }
 
@@ -82,6 +83,10 @@ contract Treasure is Ownable {
 
     function finishGame() private {
         initGame();
+    }
+
+    function getBettingPrice() public view returns (uint){
+        return bettingPrice;
     }
 
     function getNewBettingPrice() private view returns(uint){
