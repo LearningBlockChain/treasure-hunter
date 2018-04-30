@@ -9,12 +9,12 @@
                 src="http://www.dcpracticeinsights.com/content/images/collecting_money__1_1_7876.jpg"
         />
         <b-img
-                v-if="(totalCollectedInvestmentCosts / minimalInvestmentCosts) >= 0.5 && (totalCollectedInvestmentCosts / minimalInvestmentCosts) < 0.8"
+                v-if="(totalCollectedInvestmentCosts / minimalInvestmentCosts) >= 0.5 && (totalCollectedInvestmentCosts / minimalInvestmentCosts) < 1"
                 class="center"
                 src="https://warriorsway.com/wp-content/uploads/2013/07/youre-almost-there.jpg"
         />
         <b-img
-                v-if="(totalCollectedInvestmentCosts / minimalInvestmentCosts) >= 0.8"
+                v-if="(totalCollectedInvestmentCosts / minimalInvestmentCosts) >= 1"
                 class="center"
                 src="https://billyjohnson.files.wordpress.com/2010/09/done_r_hi.gif"
         />
