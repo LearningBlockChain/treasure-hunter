@@ -49,7 +49,7 @@
 
     <b-row class="put-right">
       <b-col>
-        <b-button variant="outline-success" @click="invest">Investing!</b-button>
+        <b-button variant="outline-success" @click="invest">Investment!</b-button>
       </b-col>
     </b-row>
   </div>
@@ -94,12 +94,17 @@ export default {
                 Toast('You have successfully invested to the game. Good luck!', 'success')
             }
         })
+
+        this.$store.dispatch('getContractAddress').then((res) => {
+            console.log('ContractAddress: ' + res)
+        }).catch(e => { console.log(e) })
     },
     methods: {
         invest() {
             this.$store.dispatch('invest').then((error, res) => {
                 // Nothing to do
             }).catch(e => {
+                console.log(e)
                 Toast('Something went to Wrong while investing!', 'failed')
             })
         }

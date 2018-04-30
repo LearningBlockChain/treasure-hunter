@@ -50,6 +50,9 @@ export const store = new Vuex.Store({
         setMinimumWinningReward(state, payload) {
             state.treasure.minimalReward = parseInt(payload, 10)
         },
+        setMinimumWinningReward(state, payload) {
+            state.treasure.minimalReward = parseInt(payload, 10)
+        },
         setContractAddress(state, payload) {
             state.contractAddress = payload
         }
@@ -157,7 +160,7 @@ export const store = new Vuex.Store({
                 if (state.contractInstance == null)
                     return
                 state.contractInstance().getMinimumWinningReward.call().then((result) => {
-                    commit('**', result)
+                    commit('setMinimumWinningReward', result)
                     resolve(result)
                 }).catch(e => reject(e))
             })
@@ -167,7 +170,7 @@ export const store = new Vuex.Store({
                 if (state.contractInstance == null)
                     return
                 state.contractInstance().getContractAddress.call().then((result) => {
-                    commit('**', result)
+                    commit('setContractAddress', result)
                     resolve(result)
                 }).catch(e => reject(e))
             })

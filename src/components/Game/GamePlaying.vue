@@ -41,7 +41,7 @@
             </b-row>
             <b-row class="put-right">
                 <b-col>
-                    <b-button variant="success" @click="bet" :disabled="guess.length !== 3">Betting!</b-button>
+                    <b-button variant="success" @click="bet" :disabled="guess.length !== 3">Bet</b-button>
                 </b-col>
             </b-row>
         </b-container>
