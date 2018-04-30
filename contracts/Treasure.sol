@@ -60,7 +60,7 @@ contract Treasure is Ownable {
     }
 
     modifier inInvesting() {
-        require(gameStartedAt != 0, "This is not an investment period.");
+        require(gameStartedAt == 0, "This is not an investment period.");
         _;
     }
 
