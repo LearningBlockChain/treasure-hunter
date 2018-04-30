@@ -103,9 +103,11 @@ export default {
         invest() {
             this.$store.dispatch('invest').then((error, res) => {
                 // Nothing to do
+                console.log(error)
+                console.log(res)
             }).catch(e => {
-                console.log(e)
                 Toast('Something went to Wrong while investing!', 'failed')
+                console.log(e)
             })
         }
     }

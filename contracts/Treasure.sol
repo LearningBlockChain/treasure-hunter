@@ -6,9 +6,6 @@ contract Treasure is Ownable {
     uint bettingPrice;
     uint bettingRate; // 1-10
 
-    uint investStartedAt;
-    uint investExpireAt;
-    uint investPeriodInSeconds;
     uint investPricePerAddress;
     uint minimumWinningReward;
 
@@ -45,9 +42,8 @@ contract Treasure is Ownable {
     constructor() public {
         round = 1;
         winningNumberDigits = 3;
-        investPeriodInSeconds = 60;
         bettingRate=5;
-        minimumWinningReward= 0.005 ether;
+        minimumWinningReward= 1 ether;
         investPricePerAddress = minimumWinningReward / 3;
         bettingPrice = 0;
         gameStartedAt = 0;
@@ -82,7 +78,6 @@ contract Treasure is Ownable {
 
     function initGame() private {
         gameStartedAt = 0;
-        investStartedAt = now;
         currentState = Status.INVESTING;
         uint i=0;
         for(i=0; i <currentInvestorAddresses.length;i++){
@@ -95,7 +90,6 @@ contract Treasure is Ownable {
         }
         delete currentHunterAddresses;
 
-        investExpireAt = investStartedAt + investPeriodInSeconds;
         winningNumber = uint(keccak256(now, msg.sender, round)) % (10 * winningNumberDigits);
     }
 
@@ -103,8 +97,6 @@ contract Treasure is Ownable {
     function startGame() private {
         currentState = Status.BETTING;
         gameStartedAt = now;
-        investStartedAt = 0;
-        investExpireAt = 0;
         bettingPrice = getNewBettingPrice();
     }
 
@@ -126,20 +118,6 @@ contract Treasure is Ownable {
 
     function setWinningNumberDigits(uint _digits) external onlyOwner inBetting {
         winningNumberDigits = _digits;
-    }
-
-    function getInvestPeriod() public view returns (uint){
-        return investPeriodInSeconds;
-    }
-
-    function getInvestExpireAt() public view returns (uint){
-        return investExpireAt;
-    }
-
-    function setInvestPeriod(uint _inSeconds) external onlyOwner {
-        require(gameStartedAt != 0);
-
-        investPeriodInSeconds = _inSeconds;
     }
 
     function getInvestPrice() public view returns (uint) {
@@ -191,8 +169,7 @@ contract Treasure is Ownable {
 
         emit Invest(msg.sender, address(this).balance);
 
-        if (investExpireAt < now && address(this).balance > minimumWinningReward){
-
+        if (address(this).balance > minimumWinningReward){
             startGame();
             emit StartGame(address(this).balance);
         }

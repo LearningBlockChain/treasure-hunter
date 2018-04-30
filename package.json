@@ -18,7 +18,7 @@
     "@fortawesome/fontawesome-free-solid": "^5.0.10",
     "bootstrap-vue": "^2.0.0-rc.8",
     "eslint-plugin-babel": "^5.0.0",
-    "truffle-contract": "^3.0.5",
+    "truffle-contract": "jamesanthonyferguson/truffle-contract",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vue-spinner": "^1.0.3",
