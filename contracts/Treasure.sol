@@ -158,7 +158,7 @@ contract Treasure is Ownable {
         return address(this);
     }
 
-    function invest() payable public inInvesting enoughInvestValue investOncePerRound {
+    function invest() payable public inInvesting enoughInvestValue { //investOncePerRound {
         investors[msg.sender] += investPricePerAddress;
         currentInvestorAddresses.push(msg.sender);
 
