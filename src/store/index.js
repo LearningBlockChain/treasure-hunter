@@ -65,9 +65,12 @@ export const store = new Vuex.Store({
         },
         /* Common Functions */
         getContractInstance ({commit}) {
-            getContract.then(result => {
-                commit('registerContractInstance', result)
-            }).catch(e => console.log(e))
+            return new Promise((resolve, reject) => {
+                getContract.then(result => {
+                    commit('registerContractInstance', result)
+                    resolve(result)
+                }).catch(e => console.log(e))
+            })
         },
         getReward ({commit}) {
             return new Promise((resolve, reject) => {

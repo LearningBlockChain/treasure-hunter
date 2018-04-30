@@ -14,8 +14,6 @@ let getContract = new Promise(function (resolve, reject) {
         let treasureContractInstance = Treasure.at(address)
         resolve(treasureContractInstance)
     }
-
-
-});
+})
 
 export default getContract

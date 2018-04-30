@@ -57,6 +57,7 @@
 
 <script>
 import {mapState} from 'vuex'
+import Toast from '@/util/toast'
 
 export default {
     name: 'GameInvesting',
@@ -84,21 +85,22 @@ export default {
         },
     }),
     mounted() {
-
+        let Invest = this.$store.state.contractInstance().Invest()
+        Invest.watch((err, result) => {
+            if (err) {
+                Toast('Something went to Wrong while investing!', 'failed')
+            } else {
+                console.log(result)
+                Toast('You have successfully invested to the game. Good luck!', 'success')
+            }
+        })
     },
     methods: {
         invest() {
-            this.$store.dispatch('invest').then((res) => {
+            this.$store.dispatch('invest').then((error, res) => {
                 // Nothing to do
-            })
-            let Invest = this.$store.state.contractInstance().Invest()
-            Invest.watch((err, result) => {
-                if (err) {
-                    console.log('Could not get event Invest()')
-                } else {
-                    console.log('Watch Invest')
-                    console.log(result)
-                }
+            }).catch(e => {
+                Toast('Something went to Wrong while investing!', 'failed')
             })
         }
     }
