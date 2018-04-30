@@ -1,4 +1,4 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.21;
 
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
@@ -42,7 +42,7 @@ contract Treasure is Ownable {
     event StartGame(uint _reward);
     event FinishGame(address _hunter, uint _winningNumber, uint _reward);
 
-    function Treasure() public {
+    constructor() public {
         round = 1;
         winningNumberDigits = 3;
         investPeriodInSeconds = 60;
@@ -52,6 +52,32 @@ contract Treasure is Ownable {
         bettingPrice = 0;
         initGame();
     }
+
+    modifier inBetting() {
+        require(gameStartedAt != 0, "This is not a betting period.");
+        _;
+    }
+
+    modifier inInvesting() {
+        require(gameStartedAt != 0, "This is not an investment period.");
+        _;
+    }
+
+    modifier investOncePerRound() {
+        require(investors[msg.sender] == 0, "This address has already invested in this round.");
+        _;
+    }
+
+    modifier enoughInvestValue() {
+        require(msg.value >= investPricePerAddress, "Check the investment value of this round.");
+        _;
+    }
+
+    modifier enoughBetValue(){
+        require(msg.value >= bettingPrice, "Check the betting value.");
+        _;
+    }
+
 
     function initGame() private {
         gameStartedAt = 0;
@@ -97,9 +123,7 @@ contract Treasure is Ownable {
         return winningNumberDigits;
     }
 
-    function setWinningNumberDigits(uint _digits) external onlyOwner {
-        require(gameStartedAt != 0);
-
+    function setWinningNumberDigits(uint _digits) external onlyOwner inBetting {
         winningNumberDigits = _digits;
     }
 
@@ -160,12 +184,7 @@ contract Treasure is Ownable {
         return address(this);
     }
 
-    function invest() payable public {
-        require(currentState == Status.INVESTING);
-        require(msg.value >= investPricePerAddress);
-        require(investors[msg.sender] == 0);
-
-
+    function invest() payable public inInvesting enoughInvestValue investOncePerRound {
         investors[msg.sender] += investPricePerAddress;
         currentInvestorAddresses.push(msg.sender);
 
@@ -183,10 +202,7 @@ contract Treasure is Ownable {
         }
     }
 
-    function bet(uint _guessingNumber) payable public {
-        require(currentState == Status.BETTING);
-        require(msg.value >= bettingPrice);
-
+    function bet(uint _guessingNumber) payable public inBetting enoughBetValue {
         hunters[msg.sender] += bettingPrice;
         currentHunterAddresses.push(msg.sender);
 

@@ -6,8 +6,8 @@ This is a very simple game based on Ethereum blockchain. Its purpose for win is 
 Requirements
 ----------
  - ganache-cli 
- - truffle 
- - solidity
+ - truffle v4.1.7
+ - solidity v0.4.23
 ~~~
 npm install -g ganache-cli@7.0.0-beta.0
 npm install -g truffle solidity

@@ -16,6 +16,6 @@ let getContract = new Promise(function (resolve, reject) {
     }
 
 
-})
+});
 
 export default getContract
