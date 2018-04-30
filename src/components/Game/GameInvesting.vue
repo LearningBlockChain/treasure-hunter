@@ -4,17 +4,17 @@
     <b-row>
       <b-col sm="6">
         <b-img
-                v-if="collectionRate >= 0 && collectionRate < 50"
+                v-if="(totalCollectedInvestmentCosts / minimalInvestmentCosts) >= 0 && (totalCollectedInvestmentCosts / minimalInvestmentCosts) < 0.5"
                 class="center"
                 src="http://www.dcpracticeinsights.com/content/images/collecting_money__1_1_7876.jpg"
         />
         <b-img
-                v-if="collectionRate >= 50 && collectionRate < 80"
+                v-if="(totalCollectedInvestmentCosts / minimalInvestmentCosts) >= 0.5 && (totalCollectedInvestmentCosts / minimalInvestmentCosts) < 0.8"
                 class="center"
                 src="https://warriorsway.com/wp-content/uploads/2013/07/youre-almost-there.jpg"
         />
         <b-img
-                v-if="collectionRate >= 80"
+                v-if="(totalCollectedInvestmentCosts / minimalInvestmentCosts) >= 0.8"
                 class="center"
                 src="https://billyjohnson.files.wordpress.com/2010/09/done_r_hi.gif"
         />
@@ -29,19 +29,19 @@
           </b-col>
         </b-row>
         <b-row>
+            <b-col>
+              <label>Minimal Investment Costs to start:</label>
+            </b-col>
+            <b-col>
+              {{ (minimalInvestmentCosts / Math.pow(10, 18)).toFixed(6)}} Ether
+            </b-col>
+        </b-row>
+        <b-row>
           <b-col>
             <label>Investment Costs per person:</label>
           </b-col>
           <b-col>
             {{ (investmentCosts / Math.pow(10, 18)).toFixed(6) }} Ether
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <label>Investment Period:</label>
-          </b-col>
-          <b-col>
-            {{ new Date(1000 * investExpireAt).toLocaleString() }}
           </b-col>
         </b-row>
       </b-col>
@@ -71,6 +71,10 @@ export default {
             this.$store.dispatch('getReward')
             return this.$store.state.treasure.reward
         },
+        minimalInvestmentCosts: function() {
+            this.$store.dispatch('getMinimumWinningReward')
+            return this.$store.state.treasure.minimalReward
+        },
         investmentCosts: function() {
             this.$store.dispatch('getInvestPrice')
             return this.$store.state.treasure.investPricePerAddress
@@ -78,11 +82,7 @@ export default {
         currentState: function() {
             this.$store.dispatch('getCurrentState')
             return this.$store.state.treasure.currentState === 0 ? 'Investing' : 'Game'
-        },
-        investExpireAt: function() {
-            this.$store.dispatch('getInvestExpireAt')
-            return this.$store.state.treasure.investExpireAt
-        },
+        }
     }),
     mounted() {
         let Invest = this.$store.state.contractInstance().Invest()
@@ -90,14 +90,9 @@ export default {
             if (err) {
                 Toast('Something went to Wrong while investing!', 'failed')
             } else {
-                console.log(result)
-                Toast('You have successfully invested to the game. Good luck!', 'success')
+                this.$store.dispatch('getReward')
             }
         })
-
-        this.$store.dispatch('getContractAddress').then((res) => {
-            console.log('ContractAddress: ' + res)
-        }).catch(e => { console.log(e) })
     },
     methods: {
         invest() {

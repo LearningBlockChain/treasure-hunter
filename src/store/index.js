@@ -26,9 +26,6 @@ export const store = new Vuex.Store({
         setReward(state, payload) {
             state.treasure.reward = parseInt(payload, 10)
         },
-        setInvestExpireAt(state, payload) {
-            state.treasure.investExpireAt = parseInt(payload, 10)
-        },
         setCurrentState(state, payload) {
             state.treasure.currentState = parseInt(payload, 10)
         },
@@ -43,9 +40,6 @@ export const store = new Vuex.Store({
         },
         setWinningNumberDigits(state, payload) {
             state.treasure.winningNumberDigits = parseInt(payload, 10)
-        },
-        setInvestPeriod(state, payload) {
-            state.treasure.investPeriod = parseInt(payload, 10)
         },
         setMinimumWinningReward(state, payload) {
             state.treasure.minimalReward = parseInt(payload, 10)
@@ -81,16 +75,6 @@ export const store = new Vuex.Store({
                     return
                 state.contractInstance().getReward.call().then(result => {
                     commit('setReward', result)
-                    resolve(result)
-                }).catch(e => reject(e))
-            })
-        },
-        getInvestExpireAt ({commit}) {
-            return new Promise((resolve, reject) => {
-                if (state.contractInstance == null)
-                    return
-                state.contractInstance().getInvestExpireAt.call().then((result) => {
-                    commit('setInvestExpireAt', result)
                     resolve(result)
                 }).catch(e => reject(e))
             })
@@ -145,16 +129,6 @@ export const store = new Vuex.Store({
                 }).catch(e => reject(e))
             })
         },
-        getInvestPeriod({commit}) {
-            return new Promise((resolve, reject) => {
-                if (state.contractInstance == null)
-                    return
-                state.contractInstance().getInvestPeriod.call().then((result) => {
-                    commit('setInvestPeriod', result)
-                    resolve(result)
-                }).catch(e => reject(e))
-            })
-        },
         getMinimumWinningReward({commit}) {
             return new Promise((resolve, reject) => {
                 if (state.contractInstance == null)
@@ -198,15 +172,6 @@ export const store = new Vuex.Store({
                 if (state.contractInstance == null)
                     return
                 state.contractInstance().setInvestPricePerAddress(price).then((result) => {
-                    resolve(result)
-                }).catch(e => reject(e))
-            })
-        },
-        setInvestPeriod({commit}, seconds) {
-            return new Promise((resolve, reject) => {
-                if (state.contractInstance == null)
-                    return
-                state.contractInstance().setInvestPeriod(seconds).then((result) => {
                     resolve(result)
                 }).catch(e => reject(e))
             })

@@ -15,8 +15,6 @@ let state = {
         minimalReward: null,
         bettingPrice: null,
         investPricePerAddress: null,
-        investExpireAt: null,
-        investPeriod: null,
         winningNumberDigits: null,
     },
     user: {
