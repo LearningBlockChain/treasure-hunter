@@ -50,6 +50,7 @@ contract Treasure is Ownable {
         minimumWinningReward= 0.005 ether;
         investPricePerAddress = minimumWinningReward / 3;
         bettingPrice = 0;
+        gameStartedAt = 0;
         initGame();
     }
 
@@ -157,11 +158,6 @@ contract Treasure is Ownable {
 
     function getInvestorAddresses() public view returns (address[]){
         return currentInvestorAddresses;
-    }
-
-    /* TODO: 이 함수는 필요 없을 것 같습니다. web3에서 직접 접근해서 값을 가져 올 수 있습니다. */
-    function getClientBalance(address _addr) public view returns (uint) {
-        return _addr.balance;
     }
 
     function getMinimumWinningReward() public view returns (uint) {
