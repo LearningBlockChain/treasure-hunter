@@ -63,7 +63,6 @@ export default {
     name: 'GameInvesting',
     data() {
         return {
-            collectionRate: 0
         }
     },
     computed: mapState({
@@ -81,7 +80,12 @@ export default {
         },
         currentState: function() {
             this.$store.dispatch('getCurrentState')
-            return this.$store.state.treasure.currentState === 0 ? 'Investing' : 'Game'
+            if (this.$store.state.treasure.currentState > 0) {
+                this.$emit('gameStart')
+                return
+            }
+            else
+                return 'Investing'
         }
     }),
     mounted() {
@@ -91,6 +95,16 @@ export default {
                 Toast('Something went to Wrong while investing!', 'failed')
             } else {
                 this.$store.dispatch('getReward')
+                this.$store.dispatch('getCurrentState')
+            }
+        })
+
+        let Game = this.$store.state.contractInstance().StartGame()
+        Game.watch((err, result) => {
+            if (err) {
+                Toast('Something went to Wrong while playing a game!', 'failed')
+            } else {
+                console.log('Game gets started!')
             }
         })
     },
@@ -98,8 +112,6 @@ export default {
         invest() {
             this.$store.dispatch('invest').then((error, res) => {
                 // Nothing to do
-                console.log(error)
-                console.log(res)
             }).catch(e => {
                 Toast('Something went to Wrong while investing!', 'failed')
                 console.log(e)

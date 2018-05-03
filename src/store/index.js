@@ -49,6 +49,9 @@ export const store = new Vuex.Store({
         },
         setContractAddress(state, payload) {
             state.contractAddress = payload
+        },
+        setBettingPrice(state, payload) {
+            state.bettingPrice = parseInt(payload, 10)
         }
     },
     actions: {
@@ -149,6 +152,16 @@ export const store = new Vuex.Store({
                 }).catch(e => reject(e))
             })
         },
+        getBettingPrice({commit}) {
+            return new Promise((resolve, reject) => {
+                if (state.contractInstance == null)
+                    return
+                state.contractInstance().getBettingPrice.call().then((result) => {
+                    commit('setBettingPrice', result)
+                    resolve(result)
+                }).catch(e => reject(e))
+            })
+        },
         setMinimumWinningReward({commit}, minimalReward) {
             return new Promise((resolve, reject) => {
                 if (state.contractInstance == null)
@@ -195,7 +208,7 @@ export const store = new Vuex.Store({
                     return
                 state.contractInstance().bet(guessNumber, {
                     gas: 300000,
-                    value: state.treasure.investPricePerAddress, //TODO: 이 곳에 현재 배팅 값을 가져 온 후에 그 값으르 넣어줘야 함
+                    value: state.treasure.bettingPrice,
                     from: state.web3.clientAddress
                 }).then((result) => {
                     resolve(result)

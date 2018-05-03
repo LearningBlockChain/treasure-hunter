@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1>Game Playing...</h1>
         <b-img
             v-if="!isSuccess"
             class="center"
@@ -17,10 +16,10 @@
         <b-container fluid>
             <b-row class="my-1">
                 <b-col sm="3">
-                    <label>Reward(ether):</label>
+                    <label>Reward:</label>
                 </b-col>
                 <b-col sm="9">
-                    <b-form-input type="number" v-model="reward" disabled></b-form-input>
+                    {{ (reward / Math.pow(10, 18)).toFixed(6) }} Ether
                 </b-col>
             </b-row>
             <b-row class="my-1">
@@ -28,7 +27,7 @@
                     <label>Betting-Price(wei):</label>
                 </b-col>
                 <b-col sm="9">
-                    <b-form-input type="number" v-model="bettingPrice" disabled></b-form-input>
+                    {{ (bettingPrice / Math.pow(10, 18)).toFixed(6) }} Ether
                 </b-col>
             </b-row>
             <b-row class="my-1">
@@ -39,29 +38,70 @@
                     <b-form-input type="number" v-model="guess" :state="guess.length === 3" placeholder="Enter three digits"></b-form-input>
                 </b-col>
             </b-row>
-            <b-row class="put-right">
+            <b-row class="my-1 put-right">
                 <b-col>
-                    <b-button variant="success" @click="bet" :disabled="guess.length !== 3">Bet</b-button>
+                    <b-button variant="success" @click="bet" :disabled="guess.length !== 3" target>Bet</b-button>
                 </b-col>
             </b-row>
         </b-container>
+        <br/><br/><br/>
+        <hr/>
+        <b-container>
+            <h3>Investors</h3>
+            <b-list-group v-for="(investor, index) in investors" :key="`${index}`">
+                <b-list-group-item variant="primary">{{ investor }}</b-list-group-item>
+            </b-list-group>
+            <br/>
+            <h3>Hunters</h3>
+            <b-list-group v-for="(hunter, index) in hunters" :key="`${index}`">
+                <b-list-group-item variant="success">{{ hunter }}</b-list-group-item>
+            </b-list-group>
+        </b-container>
+
     </div>
 </template>
 
 <script>
+import {mapState} from 'vuex'
+import Toast from '@/util/toast'
+
 export default {
     name: 'GamePlaying',
     data() {
         return {
             isSuccess: false,
-            reward: 10000,
-            bettingPrice: 10,
             guess: 0
         }
     },
+    computed: mapState({
+        reward: function() {
+            this.$store.dispatch('getReward')
+            return this.$store.state.treasure.reward
+        },
+        bettingPrice: function() {
+            this.$store.dispatch('getBettingPrice')
+            return this.$store.state.treasure.bettingPrice
+        },
+        hunters: function() {
+            this.$store.dispatch('getHunters')
+            return this.$store.state.user.hunters
+
+        },
+        investors: function() {
+            this.$store.dispatch('getInvestors')
+            return this.$store.state.user.investors
+        }
+    }),
     methods: {
         bet() {
             console.log('You bet ' + this.guess)
+            this.$store.dispatch('bet', this.guess).then((error, res) => {
+                console.log(res)
+            }).catch(e => {
+                Toast('Something went to Wrong while betting!', 'failed')
+                console.log(e)
+            })
+
         }
     }
 
