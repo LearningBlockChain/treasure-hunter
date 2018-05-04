@@ -39,7 +39,7 @@ contract Treasure is Ownable {
     event StartGame(uint _reward);
     event FinishGame(address _hunter, uint _winningNumber, uint _reward);
 
-    constructor() public {
+    function Treasure() {
         round = 1;
         winningNumberDigits = 3;
         bettingRate=5;
