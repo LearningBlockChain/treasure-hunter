@@ -20,12 +20,12 @@ contract Treasure is Ownable {
     uint winningNumberDigits;
 
     struct Reward {
-        uint round;
+        address winner;
         uint date;
         uint amount;
     }
 
-    mapping(address => Reward) public winners;
+    Reward[] winners;
 
     mapping(address => uint) public hunters;
     mapping(address => uint) public currentHunters;
@@ -41,7 +41,7 @@ contract Treasure is Ownable {
 
     function Treasure() {
         round = 1;
-        winningNumberDigits = 3;
+        winningNumberDigits = 1;
         bettingRate=5;
         minimumWinningReward= 1 ether;
         investPricePerAddress = 0.3 ether;
@@ -158,6 +158,11 @@ contract Treasure is Ownable {
         return address(this);
     }
 
+    function getWinner(uint _round) public view returns (address, uint, uint) {
+        require(_round < round, "Invalid round.");
+        return (winners[_round].winner, winners[_round].amount, winners[_round].date);
+    }
+
     function invest() payable public inInvesting enoughInvestValue { //investOncePerRound {
         investors[msg.sender] += investPricePerAddress;
         currentInvestorAddresses.push(msg.sender);
@@ -193,7 +198,7 @@ contract Treasure is Ownable {
             uint _investorReward = _investorsReward / _investorsCount;
             msg.sender.transfer(_betterReward);
 
-            winners[msg.sender] = Reward({amount : _totalReward, date : now, round : round});
+            winners.push(Reward({winner: msg.sender, amount: _totalReward, date: now}));
 
             emit FinishGame(msg.sender, winningNumber, _betterReward);
 
