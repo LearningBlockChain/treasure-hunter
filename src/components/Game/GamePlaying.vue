@@ -40,7 +40,7 @@
             </b-row>
             <b-row class="my-1 put-right">
                 <b-col>
-                    <b-button variant="success" @click="bet" :disabled="guess.length !== 3" target>Bet</b-button>
+                    <b-button variant="success" @click="bet" :disabled="guess.length !== winningNumberDigits" target>Bet</b-button>
                 </b-col>
             </b-row>
         </b-container>
@@ -90,6 +90,10 @@ export default {
         investors: function() {
             this.$store.dispatch('getInvestors')
             return this.$store.state.user.investors
+        },
+        winningNumberDigits() {
+            this.$store.dispatch('getWinningNumberDigits')
+            return this.$store.state.treasure.winningNumberDigits
         }
     }),
     mounted() {
