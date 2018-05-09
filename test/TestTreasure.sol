@@ -14,12 +14,18 @@ contract TestTreasure {
     function testInvest() public {
         Treasure treasure = new Treasure();
 
-        treasure.invest();
+//        treasure.invest();
 //        uint expected = 1000000;
 //        Assert.equal(result, expected, "setLevelOfDifficulty passed!");
+
     }
 
-    function testBetting() public {
+    function testBettingPrice() public {
+        uint bettingPrice = (1.200000 ether)/((10**3)*5/10);
+        Assert.equal(bettingPrice, 0.0024 ether, "bettingPrice");
+    }
+
+//    function testBetting() public {
 //        address treasure = new Treasure();
 //        Assert.equal(this.balance, 10 wei, "You have 10 ether");
 //        Assert.equal(treasure.balance, 0, "You have 0 balance");
@@ -37,5 +43,5 @@ contract TestTreasure {
         //bool result = treasure.bet(111);
         //bool expected = true;
         //Assert.equal(result, expected, "Passed!");
-    }
+//    }
 }

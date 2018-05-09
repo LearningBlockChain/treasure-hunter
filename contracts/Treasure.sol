@@ -109,7 +109,7 @@ contract Treasure is Ownable {
     }
 
     function getNewBettingPrice() private view returns(uint){
-        return (address(this).balance)/((10**winningNumberDigits)*bettingRate/10);
+        return getReward()/((10**winningNumberDigits)*bettingRate/10);
     }
 
     function getWinningNumberDigits() public view returns (uint){
