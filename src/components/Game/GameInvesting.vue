@@ -92,7 +92,7 @@ export default {
         let Invest = this.$store.state.contractInstance().Invest()
         Invest.watch((err, result) => {
             if (err) {
-                Toast('Something went to Wrong while investing!', 'failed')
+                Toast('Something went to Wrong while investing!', 'error')
             } else {
                 this.$store.dispatch('getReward')
                 this.$store.dispatch('getCurrentState')
@@ -102,7 +102,7 @@ export default {
         let Game = this.$store.state.contractInstance().StartGame()
         Game.watch((err, result) => {
             if (err) {
-                Toast('Something went to Wrong while playing a game!', 'failed')
+                Toast('Something went to Wrong while playing a game!', 'error')
             } else {
                 console.log('Game gets started!')
             }
@@ -113,7 +113,7 @@ export default {
             this.$store.dispatch('invest').then((error, res) => {
                 // Nothing to do
             }).catch(e => {
-                Toast('Something went to Wrong while investing!', 'failed')
+                Toast('Something went to Wrong while investing!', 'error')
                 console.log(e)
             })
         }

@@ -48,7 +48,7 @@
         <hr/>
         <b-container>
             <h3>Investors</h3>
-            <b-list-group v-for="(investor, index) in investors" :key="`${index}`">
+            <b-list-group v-for="(investor, index) in investors" :key="`${index} + 999999999`">
                 <b-list-group-item variant="primary">{{ investor }}</b-list-group-item>
             </b-list-group>
             <br/>
@@ -92,19 +92,37 @@ export default {
             return this.$store.state.user.investors
         }
     }),
+    mounted() {
+        let FinishGame = this.$store.state.contractInstance().FinishGame()
+        FinishGame.watch((err, result) => {
+            if (err) {
+                Toast('Something went to Wrong while investing!', 'error')
+            } else {
+                this.isSuccess = true
+                // TODO: go to the investing step again.
+            }
+        })
+
+        let Bet = this.$store.state.contractInstance().Bet()
+        Bet.watch((err, result) => {
+            if (err) {
+                Toast('Something went to Wrong while investing!', 'error')
+            } else {
+                if (this.guess.length >= 3)
+                    Toast('Sorry, you choose wrong number!', 'error')
+                this.$store.dispatch('getReward')
+            }
+        })
+    },
     methods: {
         bet() {
-            console.log('You bet ' + this.guess)
             this.$store.dispatch('bet', this.guess).then((error, res) => {
-                console.log(res)
             }).catch(e => {
-                Toast('Something went to Wrong while betting!', 'failed')
+                Toast('Something went to Wrong while betting!', 'error')
                 console.log(e)
             })
-
         }
     }
-
 }
 </script>
 
