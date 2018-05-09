@@ -2,7 +2,7 @@
     <div>
         <ring-loader :loading="loading" class="center"></ring-loader>
         <div v-if="!loading">
-            <game-playing v-if="isGameStarted"></game-playing>
+            <game-playing v-if="isGameStarted" @gameInvest="gameInvest"></game-playing>
             <game-investing v-if="!isGameStarted" @gameStart="gameStart"></game-investing>
         </div>
     </div>
@@ -33,6 +33,9 @@
         methods: {
             gameStart() {
                 this.isGameStarted = true
+            },
+            gameInvest() {
+                this.isGameStarted = false
             }
         }
     }

@@ -1,63 +1,68 @@
 <template>
     <div>
-        <b-img
-            v-if="!isSuccess"
-            class="center"
-            src="https://opengameart.org/sites/default/files/chest.png"
-            fluid
-        />
-        <b-img
-            v-if="isSuccess"
-            class="center"
-            src="https://static.wixstatic.com/media/b8bbf2_13b3b18c917f4f2799965e1608917120~mv2_d_7266_4775_s_4_2.jpg/v1/fill/w_792,h_430,al_c,q_80,usm_0.66_1.00_0.01/b8bbf2_13b3b18c917f4f2799965e1608917120~mv2_d_7266_4775_s_4_2.webp"
-            fluid
-        />
-
-        <b-container fluid>
-            <b-row class="my-1">
-                <b-col sm="3">
-                    <label>Reward:</label>
-                </b-col>
-                <b-col sm="9">
-                    {{ (reward / Math.pow(10, 18)).toFixed(6) }} Ether
-                </b-col>
-            </b-row>
-            <b-row class="my-1">
-                <b-col sm="3">
-                    <label>Betting-Price(wei):</label>
-                </b-col>
-                <b-col sm="9">
-                    {{ (bettingPrice / Math.pow(10, 18)).toFixed(6) }} Ether
-                </b-col>
-            </b-row>
-            <b-row class="my-1">
-                <b-col sm="3">
-                    <label>Guess:</label>
-                </b-col>
-                <b-col sm="9">
-                    <b-form-input type="number" v-model="guess" :state="guess.length === 3" placeholder="Enter three digits"></b-form-input>
-                </b-col>
-            </b-row>
-            <b-row class="my-1 put-right">
-                <b-col>
-                    <b-button variant="success" @click="bet" :disabled="guess.length !== winningNumberDigits" target>Bet</b-button>
-                </b-col>
-            </b-row>
-        </b-container>
-        <br/><br/><br/>
-        <hr/>
-        <b-container>
-            <h3>Investors</h3>
-            <b-list-group v-for="(investor, index) in investors" :key="`${index} + 999999999`">
-                <b-list-group-item variant="primary">{{ investor }}</b-list-group-item>
-            </b-list-group>
-            <br/>
-            <h3>Hunters</h3>
-            <b-list-group v-for="(hunter, index) in hunters" :key="`${index}`">
-                <b-list-group-item variant="success">{{ hunter }}</b-list-group-item>
-            </b-list-group>
-        </b-container>
-
+        <div v-if="isSuccess">
+            <b-img
+                    class="center"
+                    src="https://static.wixstatic.com/media/b8bbf2_13b3b18c917f4f2799965e1608917120~mv2_d_7266_4775_s_4_2.jpg/v1/fill/w_792,h_430,al_c,q_80,usm_0.66_1.00_0.01/b8bbf2_13b3b18c917f4f2799965e1608917120~mv2_d_7266_4775_s_4_2.webp"
+                    fluid
+            />
+            <b-container fluid>
+                <b-row class="my-1">
+                    <b-button variant="success" @click="restartGame">Restart Game!</b-button>
+                </b-row>
+            </b-container>
+        </div>
+        <div v-if="!isSuccess">
+            <b-img
+                    class="center"
+                    src="https://opengameart.org/sites/default/files/chest.png"
+                    fluid
+            />
+            <b-container fluid>
+                <b-row class="my-1">
+                    <b-col sm="3">
+                        <label>Reward:</label>
+                    </b-col>
+                    <b-col sm="9">
+                        {{ (reward / Math.pow(10, 18)).toFixed(6) }} Ether
+                    </b-col>
+                </b-row>
+                <b-row class="my-1">
+                    <b-col sm="3">
+                        <label>Betting-Price(wei):</label>
+                    </b-col>
+                    <b-col sm="9">
+                        {{ (bettingPrice / Math.pow(10, 18)).toFixed(6) }} Ether
+                    </b-col>
+                </b-row>
+                <b-row class="my-1">
+                    <b-col sm="3">
+                        <label>Guess:</label>
+                    </b-col>
+                    <b-col sm="9">
+                        <b-form-input type="number" v-model="guess" :state="guess.length === 3" placeholder="What is your lucky numbers?"></b-form-input>
+                    </b-col>
+                </b-row>
+                <b-row class="my-1 put-right">
+                    <b-col>
+                        <b-button variant="success" @click="bet" :disabled="guess.length !== winningNumberDigits" target>Bet</b-button>
+                    </b-col>
+                </b-row>
+            </b-container>
+            <br/><br/><br/>
+            <hr/>
+            <b-container>
+                <h3>Investors</h3>
+                <b-list-group v-for="(investor, index) in investors" :key="`${index} + 999999999`">
+                    <b-list-group-item variant="primary">{{ investor }}</b-list-group-item>
+                </b-list-group>
+                <br/>
+                <h3>Hunters</h3>
+                <b-list-group v-for="(hunter, index) in hunters" :key="`${index}`">
+                    <b-list-group-item variant="success">{{ hunter }}</b-list-group-item>
+                </b-list-group>
+            </b-container>
+        </div>
     </div>
 </template>
 
@@ -103,7 +108,6 @@ export default {
                 Toast('Something went to Wrong while investing!', 'error')
             } else {
                 this.isSuccess = true
-                // TODO: go to the investing step again.
             }
         })
 
@@ -112,7 +116,7 @@ export default {
             if (err) {
                 Toast('Something went to Wrong while investing!', 'error')
             } else {
-                if (this.guess.length >= 3)
+                if (this.guess.length > 0)
                     Toast('Sorry, you choose wrong number!', 'error')
                 this.$store.dispatch('getReward')
                 this.$store.dispatch('getBettingPrice')
@@ -126,6 +130,9 @@ export default {
                 Toast('Something went to Wrong while betting!', 'error')
                 console.log(e)
             })
+        },
+        restartGame() {
+            this.$emit('gameInvest')
         }
     }
 }
