@@ -41,5 +41,9 @@ contract TreasureGame is Ownable {
         return address(this).balance;
     }
 
+    function getState() public view returns (Status) {
+        return currentState;
+    }
+
     function initGame() internal;
 }
