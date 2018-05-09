@@ -111,6 +111,7 @@ export default {
                 if (this.guess.length >= 3)
                     Toast('Sorry, you choose wrong number!', 'error')
                 this.$store.dispatch('getReward')
+                this.$store.dispatch('getBettingPrice')
             }
         })
     },
