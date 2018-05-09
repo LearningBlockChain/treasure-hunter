@@ -1,5 +1,5 @@
 import {default as contract} from 'truffle-contract'
-import treasure_artifacts from '../../build/contracts/Treasure.json'
+import treasure_artifacts from '../../-build/contracts/Treasure.json'
 
 let getContract = new Promise(function (resolve, reject) {
     let Treasure = contract(treasure_artifacts);
