@@ -157,6 +157,7 @@ export const store = new Vuex.Store({
                 if (state.contractInstance == null)
                     return
                 state.contractInstance().getBettingPrice.call().then((result) => {
+                    console.log(result)
                     commit('setBettingPrice', result)
                     resolve(result)
                 }).catch(e => reject(e))

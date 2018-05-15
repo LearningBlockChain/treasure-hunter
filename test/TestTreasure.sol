@@ -21,8 +21,10 @@ contract TestTreasure {
     }
 
     function testBettingPrice() public {
-        uint bettingPrice = (1.200000 ether)/((10**3)*5/10);
-        Assert.equal(bettingPrice, 0.0024 ether, "bettingPrice");
+//        uint bettingPrice = (1.200000 ether)/((10**3)*5/10);
+//        Assert.equal(bettingPrice, 0.0024 ether, "bettingPrice");
+        uint roundDown = uint(28682221646935461 wei) / 1000000000000 * 100000000000;
+        Assert.equal(roundDown, 0.0028682 ether, "roundDown");
     }
 
 //    function testBetting() public {
