@@ -71,8 +71,9 @@ contract Treasure is Ownable {
     }
 
     modifier enoughBetValue(){
-        uint _roundDown = uint(bettingPrice) / 1000000000000 * 100000000000;
-        require(msg.value >= _roundDown, "Check the betting value.");
+//        uint _roundDown = uint(bettingPrice) / 1000000000000 * 100000000000;
+//        require(msg.value >= _roundDown, "Check the betting value.");
+        require(msg.value >= 0, "Check the betting value.");
         _;
     }
 
