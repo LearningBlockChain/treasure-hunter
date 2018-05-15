@@ -41,7 +41,7 @@ contract Treasure is Ownable {
 
     function Treasure() {
         round = 1;
-        winningNumberDigits = 1;
+        winningNumberDigits = 2;
         bettingRate=5;
         minimumWinningReward= 1 ether;
         investPricePerAddress = 0.3 ether;

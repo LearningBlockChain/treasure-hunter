@@ -10,7 +10,7 @@ let getContract = new Promise(function (resolve, reject) {
     //         resolve(instance);
     //     });
     // } else {
-        let address = "0xa0638722b7399aa58725aad534e354b7a57362d8"
+        let address = "0xfaf2e7f19d09813898951f38eed4719197b8582e"
         let treasureContractInstance = Treasure.at(address)
         resolve(treasureContractInstance)
     }
