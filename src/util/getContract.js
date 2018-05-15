@@ -6,11 +6,11 @@ let getContract = new Promise(function (resolve, reject) {
     Treasure.setProvider(web3.currentProvider);
 
     if (process.env.NODE_ENV === "development") {
-        Treasure.deployed().then(function (instance) {
-            resolve(instance);
-        });
-    } else {
-        let address = "YOU MUST SET ADDRESS OR TREASURE"
+    //     Treasure.deployed().then(function (instance) {
+    //         resolve(instance);
+    //     });
+    // } else {
+        let address = "0xa0638722b7399aa58725aad534e354b7a57362d8"
         let treasureContractInstance = Treasure.at(address)
         resolve(treasureContractInstance)
     }
